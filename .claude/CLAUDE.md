@@ -49,7 +49,7 @@ OIDC Trusted Publisher.
 
 CGO files use:
 - `CFLAGS: -I${SRCDIR}/include` — header always present in the repo
-- `LDFLAGS: -L${SRCDIR}/native/<triple> -laptos_confidential_asset_ffi`
+- `LDFLAGS: -laptos_confidential_asset_ffi` — no `-L` path; caller must set `CGO_LDFLAGS`
 
 **In-repo development** — stage the built `.a` manually:
 
@@ -58,7 +58,7 @@ cargo build -p aptos_confidential_asset_ffi --release --manifest-path rust/Cargo
 TRIPLE=aarch64-apple-darwin
 mkdir -p bindings/go/aptosconfidential/native/$TRIPLE
 cp rust/target/release/libaptos_confidential_asset_ffi.a bindings/go/aptosconfidential/native/$TRIPLE/
-cd bindings/go && go test ./aptosconfidential/...
+cd bindings/go && CGO_LDFLAGS="-L$(pwd)/aptosconfidential/native/$TRIPLE" go test ./aptosconfidential/...
 ```
 
 **External consumer** — download prebuilt library, then build:
