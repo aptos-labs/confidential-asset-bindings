@@ -30,7 +30,7 @@ var httpClient = &http.Client{Timeout: httpTimeout}
 func main() {
 	version, err := readVersion()
 	if err != nil {
-		fatalf("read VERSION: %v", err)
+		fatalf("%v", err)
 	}
 
 	goos := envOr("GOOS", runtime.GOOS)
