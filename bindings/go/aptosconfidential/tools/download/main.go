@@ -295,6 +295,8 @@ func writeFile(dest string, r io.Reader) error {
 		os.Remove(tmpName)
 		return err
 	}
+	// os.CreateTemp uses 0600; make library and header readable by all users.
+	_ = os.Chmod(dest, 0644)
 	return nil
 }
 
