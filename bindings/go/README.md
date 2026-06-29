@@ -96,7 +96,7 @@ The Go module already contains the header file — no separate header copy is ne
 ## Prerequisites
 
 - `CGO_ENABLED=1` (default on native builds)
-- A C compiler (Clang on macOS, GCC on Linux, MinGW-w64/GCC on Windows)
+- A C compiler (Clang on macOS, GCC on Linux, MinGW-w64/GCC on Windows — CGO requires a GCC-compatible toolchain; MinGW-w64 can link the MSVC-format `.lib` prebuilts)
 
 ## Version pinning
 

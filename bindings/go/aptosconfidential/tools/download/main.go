@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 	"time"
@@ -38,18 +39,25 @@ func main() {
 
 	triple, ext, libName, err := targetTriple(goos, goarch, isMusl)
 	if err != nil {
-		cpCmd := "cp confidential-asset-bindings/rust/target/<triple>/release/lib*.a ./native/<triple>/"
 		if goos == "windows" {
-			cpCmd = "copy confidential-asset-bindings\\rust\\target\\<triple>\\release\\aptos_confidential_asset_ffi.lib .\\native\\<triple>\\"
+			fatalf("%v\n\nTo build from source (replace <triple> with your target, e.g. aarch64-pc-windows-msvc):\n"+
+				"  git clone https://github.com/aptos-labs/confidential-asset-bindings\n"+
+				"  cargo build -p aptos_confidential_asset_ffi --release"+
+				" --manifest-path confidential-asset-bindings\\rust\\Cargo.toml --target <triple>\n"+
+				"  mkdir native\\<triple>\n"+
+				"  copy confidential-asset-bindings\\rust\\target\\<triple>\\release\\aptos_confidential_asset_ffi.lib native\\<triple>\\\n"+
+				"  set CGO_LDFLAGS=-L%%cd%%\\native\\<triple> && go build ./...",
+				err)
+		} else {
+			fatalf("%v\n\nTo build from source (replace <triple> with your target, e.g. x86_64-apple-darwin):\n"+
+				"  git clone https://github.com/aptos-labs/confidential-asset-bindings\n"+
+				"  cargo build -p aptos_confidential_asset_ffi --release \\\n"+
+				"    --manifest-path confidential-asset-bindings/rust/Cargo.toml --target <triple>\n"+
+				"  mkdir -p ./native/<triple>\n"+
+				"  cp confidential-asset-bindings/rust/target/<triple>/release/lib*.a ./native/<triple>/\n"+
+				"  CGO_LDFLAGS=\"-L$(pwd)/native/<triple>\" go build ./...",
+				err)
 		}
-		fatalf("%v\n\nTo build from source (replace <triple> with your target):\n"+
-			"  git clone https://github.com/aptos-labs/confidential-asset-bindings\n"+
-			"  cargo build -p aptos_confidential_asset_ffi --release \\\n"+
-			"    --manifest-path confidential-asset-bindings/rust/Cargo.toml --target <triple>\n"+
-			"  mkdir -p ./native/<triple>\n"+
-			"  %s\n"+
-			"  CGO_LDFLAGS=\"-L$(pwd)/native/<triple>\" go build ./...",
-			err, cpCmd)
 	}
 
 	outDir := filepath.Join(nativeDir, triple)
@@ -113,12 +121,18 @@ func main() {
 	fmt.Printf("native/%s: ready (v%s)\n", triple, version)
 }
 
+var semverRE = regexp.MustCompile(`^\d+\.\d+\.\d+$`)
+
 func readVersion() (string, error) {
 	raw := embeddedVersion
 	if v := os.Getenv("CA_FFI_VERSION"); v != "" {
 		raw = v
 	}
-	return strings.TrimPrefix(raw, "v"), nil
+	raw = strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(raw), "v"))
+	if !semverRE.MatchString(raw) {
+		return "", fmt.Errorf("invalid version %q: must be X.Y.Z", raw)
+	}
+	return raw, nil
 }
 
 func envOr(key, fallback string) string {
