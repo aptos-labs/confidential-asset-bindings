@@ -196,8 +196,8 @@ jobs:
           fi
       - name: Check VERSION matches embeddedVersion
         run: |
-          FILE_VER="$(cat bindings/go/VERSION | tr -d '[:space:]')"
-          EMBEDDED_VER="$(grep 'embeddedVersion' bindings/go/aptosconfidential/tools/download/version.go | grep -oP '"\K[^"]+')"
+          FILE_VER="$(tr -d '[:space:]' < bindings/go/VERSION)"
+          EMBEDDED_VER="$(sed -n 's/^const embeddedVersion = "\(.*\)"/\1/p' bindings/go/aptosconfidential/tools/download/version.go)"
           if [ "$FILE_VER" != "$EMBEDDED_VER" ]; then
             echo "ERROR: bindings/go/VERSION ($FILE_VER) does not match embeddedVersion in version.go ($EMBEDDED_VER)."
             echo "Update both files together when bumping the FFI version."
