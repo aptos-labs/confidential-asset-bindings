@@ -26,10 +26,11 @@ The triple in step 3 matches your platform — see the [platform table](#support
 # 1. Build the Rust FFI library
 cargo build -p aptos_confidential_asset_ffi --release --manifest-path rust/Cargo.toml
 
-# 2. Stage the built library
+# 2. Stage the built library (Linux/macOS)
 TRIPLE=aarch64-apple-darwin  # adjust for your platform
 mkdir -p bindings/go/aptosconfidential/native/$TRIPLE
 cp rust/target/release/libaptos_confidential_asset_ffi.a bindings/go/aptosconfidential/native/$TRIPLE/
+# Windows: cp rust\target\release\aptos_confidential_asset_ffi.lib bindings\go\aptosconfidential\native\$TRIPLE\
 
 # 3. Test
 cd bindings/go && go test ./aptosconfidential/...
@@ -51,7 +52,7 @@ solver := aptosconfidential.NewSolver()
 value, err := solver.Solve(compressedPoint32, 32)
 ```
 
-`numBits` must be one of `8, 16, 32, 64`. `Solver.Solve` returns an error if `maxNumBits` is invalid, or if the solver is nil or already closed.
+`numBits` for `BatchRangeProof`/`BatchVerifyProof` must be one of `8, 16, 32, 64`. `Solver.Solve` accepts `maxNumBits` of `16` or `32` only, and returns an error if the value is invalid or the solver is nil or already closed.
 
 For long-running services, call `(*Solver).Close()` explicitly to release native resources deterministically.
 
@@ -95,7 +96,7 @@ The Go module already contains the header file — no separate header copy is ne
 ## Prerequisites
 
 - `CGO_ENABLED=1` (default on native builds)
-- A C compiler (Clang on macOS, GCC on Linux, MSVC on Windows)
+- A C compiler (Clang on macOS, GCC on Linux, MinGW-w64/GCC on Windows)
 
 ## Version pinning
 
