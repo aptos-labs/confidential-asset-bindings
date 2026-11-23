@@ -76,10 +76,10 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
     "@changesets/cli": "^2.30.0",
-    "@types/react": "~19.1.1",
-    "expo": "^55.0.11",
-    "expo-module-scripts": "^55.0.2",
-    "react-native": "0.82.1",
+    "@types/react": "~19.3.0",
+    "expo": "^58.0.26",
+    "expo-module-scripts": "^56.0.3",
+    "react-native": "^0.88.1",
     "tsdown": "^0.21.7",
     "typescript": "^5.8.3",
     "wasm-pack": "^0.15.0"
@@ -88,5 +88,9 @@
     "expo": "*",
     "react": "*",
     "react-native": "*"
+  },
+  "overrides": {
+    "glob": ">=14.0.2",
+    "minimatch": ">=11.0.1"
   }
 }
