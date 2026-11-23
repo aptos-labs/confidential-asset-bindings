@@ -1,5 +1,11 @@
 # @aptos-labs/confidential-asset-bindings
 
+## 1.1.3
+
+### Patch Changes
+
+- 289062d: Update dependencies to resolve known security vulnerabilities (CVEs).
+
 ## 1.1.2
 
 ### Patch Changes
