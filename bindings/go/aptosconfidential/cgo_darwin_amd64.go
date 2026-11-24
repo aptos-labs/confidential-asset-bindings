@@ -4,7 +4,7 @@ package aptosconfidential
 
 /*
 #cgo CFLAGS: -I${SRCDIR}/include
-#cgo LDFLAGS: -L${SRCDIR}/native/x86_64-apple-darwin -laptos_confidential_asset_ffi
+#cgo LDFLAGS: -laptos_confidential_asset_ffi
 #include "aptos_confidential_asset.h"
 #include <stdlib.h>
 */

@@ -33,7 +33,8 @@ cp rust/target/release/libaptos_confidential_asset_ffi.a bindings/go/aptosconfid
 # Windows: cp rust\target\release\aptos_confidential_asset_ffi.lib bindings\go\aptosconfidential\native\$TRIPLE\
 
 # 3. Test
-cd bindings/go && go test ./aptosconfidential/...
+cd bindings/go
+CGO_LDFLAGS="-L$(pwd)/aptosconfidential/native/$TRIPLE" go test ./aptosconfidential/...
 ```
 
 For musl Linux, use `-tags musl` and set `TRIPLE=x86_64-unknown-linux-musl` (or `aarch64-unknown-linux-musl`). When running the download tool on a glibc host targeting musl, set `CA_MUSL=1` so it downloads the musl variant (auto-detection only works on musl hosts).

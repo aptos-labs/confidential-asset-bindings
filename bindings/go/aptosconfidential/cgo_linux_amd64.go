@@ -4,7 +4,7 @@ package aptosconfidential
 
 /*
 #cgo CFLAGS: -I${SRCDIR}/include
-#cgo LDFLAGS: -L${SRCDIR}/native/x86_64-unknown-linux-gnu -laptos_confidential_asset_ffi -ldl -lpthread -lm
+#cgo LDFLAGS: -laptos_confidential_asset_ffi -ldl -lpthread -lm
 #include "aptos_confidential_asset.h"
 #include <stdlib.h>
 */
